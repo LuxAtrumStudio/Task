@@ -1,0 +1,7 @@
+#DATAFILE
+vector string task Freud_Essay Review Review Read_229-265 Review Review
+vector string group E&D E&D Calc_III E&D Spanish_201 Physics
+vector int priority 4 5 5 3 5 5
+vector int date 1480814319 1480814366 1480814352 1480870764 1480814383 1480814405
+vector int duedate 1481097600 1481356800 1481356800 1481097600 1481529600 1481616000
+vector double calcsum -6.836979 -5.836979 -5.836979 -4.836979 -3.836979 -2.836979
