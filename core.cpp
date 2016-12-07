@@ -1,176 +1,16 @@
 #include "induco.h"
+#include "task.h"
 #include <ctime>
 #include <iostream>
 #include <math.h>
 #include <pessum.h>
 
-pessum::luxreader::DataFile tasklist;
-
-void ToggleSpaces(bool spaces) {
-  if (spaces == true) {
-    for (int i = 0; i < tasklist.datafilevariables[0].stringvectorvalues.size();
-         i++) {
-      std::string tempstr = tasklist.datafilevariables[0].stringvectorvalues[i];
-      for (int j = 0; j < tempstr.size(); j++) {
-        if (tempstr[j] == '_') {
-          tempstr[j] = ' ';
-        }
-      }
-      tasklist.datafilevariables[0].stringvectorvalues[i] = tempstr;
-      tempstr = tasklist.datafilevariables[1].stringvectorvalues[i];
-      for (int j = 0; j < tempstr.size(); j++) {
-        if (tempstr[j] == '_') {
-          tempstr[j] = ' ';
-        }
-      }
-      tasklist.datafilevariables[1].stringvectorvalues[i] = tempstr;
-    }
-  }
-  if (spaces == false) {
-    for (int i = 0; i < tasklist.datafilevariables[0].stringvectorvalues.size();
-         i++) {
-      std::string tempstr = tasklist.datafilevariables[0].stringvectorvalues[i];
-      for (int j = 0; j < tempstr.size(); j++) {
-        if (tempstr[j] == ' ') {
-          tempstr[j] = '_';
-        }
-      }
-      tasklist.datafilevariables[0].stringvectorvalues[i] = tempstr;
-      tempstr = tasklist.datafilevariables[1].stringvectorvalues[i];
-      for (int j = 0; j < tempstr.size(); j++) {
-        if (tempstr[j] == ' ') {
-          tempstr[j] = '_';
-        }
-      }
-      tasklist.datafilevariables[1].stringvectorvalues[i] = tempstr;
-    }
-  }
-}
-
-bool Sorted() {
-  bool sort = false;
-  for (int i = 1; i < tasklist.datafilevariables[5].doublevectorvalues.size();
-       i++) {
-    if (tasklist.datafilevariables[5].doublevectorvalues[i - 1] >
-        tasklist.datafilevariables[5].doublevectorvalues[i]) {
-      sort = false;
-      return (false);
-    }
-  }
-  return (true);
-}
-
-void Prioritize() {
-  double priorityweight = 2, timeweight = 1;
-  int currenttime;
-  time_t ct;
-  time(&ct);
-  currenttime = ct;
-  for (int i = 0; i < tasklist.datafilevariables[0].stringvectorvalues.size();
-       i++) {
-    double priority = 0;
-    priority =
-        timeweight *
-        ((tasklist.datafilevariables[4].intvectorvalues[i] - currenttime) /
-         86400.0);
-    priority -=
-        (priorityweight * tasklist.datafilevariables[2].intvectorvalues[i]);
-    tasklist.datafilevariables[5].doublevectorvalues[i] = priority;
-  }
-  while (Sorted() == false) {
-    for (int i = 1; i < tasklist.datafilevariables[5].doublevectorvalues.size();
-         i++) {
-      int j = i;
-      while (j > 0 &&
-             tasklist.datafilevariables[5].doublevectorvalues[j - 1] >
-                 tasklist.datafilevariables[5].doublevectorvalues[i]) {
-        j--;
-      }
-      iter_swap(tasklist.datafilevariables[0].stringvectorvalues.begin() + j,
-                tasklist.datafilevariables[0].stringvectorvalues.begin() + i);
-      iter_swap(tasklist.datafilevariables[1].stringvectorvalues.begin() + j,
-                tasklist.datafilevariables[1].stringvectorvalues.begin() + i);
-      iter_swap(tasklist.datafilevariables[2].intvectorvalues.begin() + j,
-                tasklist.datafilevariables[2].intvectorvalues.begin() + i);
-      iter_swap(tasklist.datafilevariables[3].intvectorvalues.begin() + j,
-                tasklist.datafilevariables[3].intvectorvalues.begin() + i);
-      iter_swap(tasklist.datafilevariables[4].intvectorvalues.begin() + j,
-                tasklist.datafilevariables[4].intvectorvalues.begin() + i);
-      iter_swap(tasklist.datafilevariables[5].doublevectorvalues.begin() + j,
-                tasklist.datafilevariables[5].doublevectorvalues.begin() + i);
-    }
-  }
-}
-
-void DisplayTasks() {
-  int width, height;
-  width = induco::GetSize();
-  height = induco::GetSize(true);
-  std::cout << "TASK LIST\n";
-  induco::Line(width);
-  std::cout << "###  TASK                                         "
-               "GROUP                    DUE DATE           \n";
-  for (int i = 0; i < tasklist.datafilevariables[0].stringvectorvalues.size();
-       i++) {
-    std::string line = "";
-    if (i + 1 < 100) {
-      line += " ";
-    }
-    if (i + 1 < 10) {
-      line += " ";
-    }
-    line += std::to_string(i + 1) + ") ";
-    line += tasklist.datafilevariables[0].stringvectorvalues[i];
-    for (int j = tasklist.datafilevariables[0].stringvectorvalues[i].size();
-         j < 44; j++) {
-      line += " ";
-    }
-    line += " ";
-    if (tasklist.datafilevariables[1].stringvectorvalues[i] != "NULL") {
-      line += tasklist.datafilevariables[1].stringvectorvalues[i];
-    }
-    while (line.size() < 74) {
-      line += " ";
-    }
-    line += " ";
-    line += induco::DisplayDate(
-        tasklist.datafilevariables[4].intvectorvalues[i], true, true);
-    if (tasklist.datafilevariables[2].intvectorvalues[i] == 5) {
-      system("setterm -foreground red");
-    }
-    if (tasklist.datafilevariables[2].intvectorvalues[i] == 4) {
-      system("setterm -foreground yellow");
-    }
-    if (tasklist.datafilevariables[2].intvectorvalues[i] == 3) {
-      system("setterm -foreground white");
-    }
-    if (tasklist.datafilevariables[2].intvectorvalues[i] == 2) {
-      system("setterm -foreground cyan");
-    }
-    if (tasklist.datafilevariables[2].intvectorvalues[i] == 1) {
-      system("setterm -foreground green");
-    }
-    std::cout << line << "\n";
-    system("setterm -foreground white");
-  }
-  if (tasklist.datafilevariables[0].stringvectorvalues.size() == 0) {
-    system("setterm -foreground green");
-    std::cout << "NO TASKS\n";
-    system("setterm -foreground white");
-  }
-  for (int i = tasklist.datafilevariables[0].stringvectorvalues.size();
-       i < height - 6; i++) {
-    std::cout << "\n";
-  }
-  induco::Line(width);
-  std::cout << "Add[a] | Compleate[d] | Edit[e] | Quit[q]\n";
-}
-
 int main() {
   bool running = true;
   std::string input = "";
   pessum::InitializePessumComponents();
-  tasklist = pessum::luxreader::LoadLuxDataFile("tasks");
+  task::MainLoop();
+  /*tasklist = pessum::luxreader::LoadLuxDataFile("tasks");
   ToggleSpaces(true);
   while (running == true) {
     Prioritize();
@@ -368,5 +208,6 @@ int main() {
   }
   ToggleSpaces(false);
   pessum::luxreader::SaveLuxDataFile("tasks", tasklist);
+  */
   pessum::TerminatePessumComponents();
 }

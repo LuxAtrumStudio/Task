@@ -197,3 +197,23 @@ int induco::GetSize(bool height) {
     return (w);
   }
 }
+
+void induco::SetColor(int color) {
+  if (color == 0) {
+    system("setterm -foreground black");
+  } else if (color == 1) {
+    system("setterm -foreground blue");
+  } else if (color == 2) {
+    system("setterm -foreground green");
+  } else if (color == 3) {
+    system("setterm -foreground cyan");
+  } else if (color == 4) {
+    system("setterm -foreground red");
+  } else if (color == 5) {
+    system("setterm -foreground magenta");
+  } else if (color == 6) {
+    system("setterm -foreground yellow");
+  } else if (color == 7) {
+    system("setterm -foreground white");
+  }
+}

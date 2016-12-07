@@ -17,7 +17,8 @@ std::string SGetValue(std::string value);
 // Converts elapsed time double to units of h, m, s, ms, us
 std::string DisplayTime(double elapsed = 0, bool unit = false);
 // Converts time in s to DATE
-std::string DisplayDate(int timesec, bool disptime, bool dispyear);
+std::string DisplayDate(int timesec, bool disptime = false,
+                        bool dispyear = false);
 // Waits for any user input (Y/N)
 bool Pause();
 // Displays a line of size length
@@ -30,5 +31,7 @@ void Echo(bool setting);
 double Timer(bool startb = false);
 // Returns terminal width and height in characters
 int GetSize(bool height = false);
+// Sets the console output color
+void SetColor(int color = 7);
 }
 #endif
