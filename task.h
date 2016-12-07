@@ -15,8 +15,13 @@ void MainLoop();
 void DisplayTasks();
 void Prioritize();
 void ToggleSpaces(bool spaces);
-void Sort(int variable);
+void Sort(int variable = 5);
 void LoadTasks();
 void SaveTasks();
+void AddTask();
+void DeleteTask(int pointer);
+void EditTask(int pointer);
+int SelectSort();
+bool CheckStr(std::string str);
 }
 #endif
