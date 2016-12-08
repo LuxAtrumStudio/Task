@@ -153,8 +153,12 @@ void task::Prioritize() {
          86400.0);
     priority -=
         (priorityweight * tasklistlux.datafilevariables[2].intvectorvalues[i]);
-    tasklist[i].prioritization = priority;
     tasklistlux.datafilevariables[5].doublevectorvalues[i] = priority;
+
+    priority = 0;
+    priority = timeweight * ((tasklist[i].duedate - currenttime) / 86400.0);
+    priority -= (priorityweight * tasklist[i].priority);
+    tasklist[i].prioritization = priority;
   }
 }
 
@@ -202,33 +206,36 @@ void task::ToggleSpaces(bool spaces) {
 }
 
 void task::Sort(int variable) {
-  if (variable == 0) {
+  if (variable != 5) {
     for (int i = 1; i < tasklist.size(); i++) {
       int j = i;
-      bool greater = false;
-      for (int k = 0; k < tasklist[j - i].taskstr.size(); k++) {
-        if (tasklist[j].taskstr.size() < k) {
-          greater = true;
-          break;
-        }
-        if (int(tasklist[j - 1].taskstr[k]) > int(tasklist[j].taskstr[k])) {
-          greater = true;
-          break;
-        }
-      }
-      while (j > 0 && greater == true) {
+      while (j > 0 &&
+             tasklist[j - 1].prioritization > tasklist[j].prioritization) {
         iter_swap(tasklist.begin() + j, tasklist.begin() + j - 1);
         j--;
       }
     }
   }
-  if (variable == 1) {
+  if (variable >= 0 && variable <= 1) {
+    for (int i = 1; i < tasklist.size(); i++) {
+      int j = i;
+      while (variable == 0 && j > 0 &&
+             tasklist[j - 1].taskstr > tasklist[j].taskstr) {
+        iter_swap(tasklist.begin() + j, tasklist.begin() + j - 1);
+        j--;
+      }
+      while (variable == 1 && j > 0 &&
+             tasklist[j - 1].group > tasklist[j].group) {
+        iter_swap(tasklist.begin() + j, tasklist.begin() + j - 1);
+        j--;
+      }
+    }
   }
   if (variable >= 2 && variable <= 5) {
     for (int i = 1; i < tasklist.size(); i++) {
       int j = i;
       while (variable == 2 && j > 0 &&
-             tasklist[j - 1].priority > tasklist[j].priority) {
+             tasklist[j - 1].priority < tasklist[j].priority) {
         iter_swap(tasklist.begin() + j, tasklist.begin() + j - 1);
         j--;
       }

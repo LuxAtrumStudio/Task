@@ -1,7 +1,7 @@
 #DATAFILE
-vector string task Hello Arden Rasmussen Rasmuss Rasmussan Will Ryan Minho
-vector string group testing_A testing_B testing_A testing_B testing_A testing_B testing_A testing_C
-vector int priority 6 5 4 3 2 1 0 5
-vector int date 1481090636 1481090655 1481090688 1481090703 1481090744 1481090757 1481090772 1481091006
-vector int duedate 1481011200 1481097600 1481011200 1481184000 1481270400 1481356800 1481443200 1483257600
-vector double calcsum -12.929907 -9.929907 -8.929907 -4.929907 -1.929907 1.070093 4.070093 15.070093
+vector string task Review Review Review Review Test
+vector string group Calc_III Spanish_201 E&D Physics Testing
+vector int priority 6 6 4 4 1
+vector int date 1480814352 1480814383 1480814366 1480814405 1481088680
+vector int duedate 1481356800 1481529600 1481356800 1481616000 1481788800
+vector double calcsum -10.343750 -8.343750 -6.343750 -3.343750 4.656250
