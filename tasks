@@ -1,7 +1,7 @@
 #DATAFILE
-vector string task Review Review Review Review Test
-vector string group Calc_III Spanish_201 E&D Physics Testing
-vector int priority 6 6 4 4 1
-vector int date 1480814352 1480814383 1480814366 1480814405 1481088680
-vector int duedate 1481356800 1481529600 1481356800 1481616000 1481788800
-vector double calcsum -10.343750 -8.343750 -6.343750 -3.343750 4.656250
+vector string task Review Review Convert_Task_objects_back_to_data_file_structure! Terminate_Object_causes_SegFault
+vector string group Spanish_201 Physics C++/Task C++/Aequus
+vector int priority 6 5 5 3
+vector int date 1480814383 1480814405 1481411175 1481411203
+vector int duedate 1481529600 1481616000 1483257600 1482220800
+vector double calcsum -11.929884 -8.929884 10.070116 2.070116
