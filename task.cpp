@@ -1,11 +1,11 @@
-#include "induco.h"
-#include "task.h"
+#include <math.h>
+#include <pessum.h>
 #include <algorithm>
 #include <ctime>
 #include <iostream>
-#include <math.h>
-#include <pessum.h>
 #include <vector>
+#include "induco.h"
+#include "task.h"
 
 namespace task {
 pessum::luxreader::DataFile tasklistlux;
@@ -144,17 +144,8 @@ void task::Prioritize() {
   time_t ct;
   time(&ct);
   currenttime = ct;
-  for (int i = 0;
-       i < tasklistlux.datafilevariables[0].stringvectorvalues.size(); i++) {
+  for (int i = 0; i < tasklist.size(); i++) {
     double priority = 0;
-    priority =
-        timeweight *
-        ((tasklistlux.datafilevariables[4].intvectorvalues[i] - currenttime) /
-         86400.0);
-    priority -=
-        (priorityweight * tasklistlux.datafilevariables[2].intvectorvalues[i]);
-    tasklistlux.datafilevariables[5].doublevectorvalues[i] = priority;
-
     priority = 0;
     priority = timeweight * ((tasklist[i].duedate - currenttime) / 86400.0);
     priority -= (priorityweight * tasklist[i].priority);
@@ -259,7 +250,8 @@ void task::Sort(int variable) {
 }
 
 void task::LoadTasks() {
-  tasklistlux = pessum::luxreader::LoadLuxDataFile("tasks");
+  tasklistlux =
+      pessum::luxreader::LoadLuxDataFile("/home/arden/bin/files/tasks");
   ToggleSpaces(true);
   for (int i = 0;
        i < tasklistlux.datafilevariables[0].stringvectorvalues.size(); i++) {
@@ -276,8 +268,30 @@ void task::LoadTasks() {
 }
 
 void task::SaveTasks() {
+  Sort(5);
+  tasklistlux.datafilevariables[0].stringvectorvalues.clear();
+  tasklistlux.datafilevariables[1].stringvectorvalues.clear();
+  tasklistlux.datafilevariables[2].intvectorvalues.clear();
+  tasklistlux.datafilevariables[3].intvectorvalues.clear();
+  tasklistlux.datafilevariables[4].intvectorvalues.clear();
+  tasklistlux.datafilevariables[5].doublevectorvalues.clear();
+  for (int i = 0; i < tasklist.size(); i++) {
+    tasklistlux.datafilevariables[0].stringvectorvalues.push_back(
+        tasklist[i].taskstr);
+    tasklistlux.datafilevariables[1].stringvectorvalues.push_back(
+        tasklist[i].group);
+    tasklistlux.datafilevariables[2].intvectorvalues.push_back(
+        tasklist[i].priority);
+    tasklistlux.datafilevariables[3].intvectorvalues.push_back(
+        tasklist[i].date);
+    tasklistlux.datafilevariables[4].intvectorvalues.push_back(
+        tasklist[i].duedate);
+    tasklistlux.datafilevariables[5].doublevectorvalues.push_back(
+        tasklist[i].prioritization);
+  }
   ToggleSpaces(false);
-  pessum::luxreader::SaveLuxDataFile("tasks", tasklistlux);
+  pessum::luxreader::SaveLuxDataFile("/home/arden/bin/files/tasks",
+                                     tasklistlux);
 }
 
 void task::AddTask() {
@@ -350,12 +364,6 @@ void task::AddTask() {
   newtime->tm_min = min;
   newtime->tm_sec = sec;
   duetime = mktime(newtime);
-  tasklistlux.datafilevariables[0].stringvectorvalues.push_back(text);
-  tasklistlux.datafilevariables[1].stringvectorvalues.push_back(group);
-  tasklistlux.datafilevariables[2].intvectorvalues.push_back(priority);
-  tasklistlux.datafilevariables[3].intvectorvalues.push_back(currenttime);
-  tasklistlux.datafilevariables[4].intvectorvalues.push_back(duetime);
-  tasklistlux.datafilevariables[5].doublevectorvalues.push_back(0);
   Task newtask;
   newtask.taskstr = text;
   newtask.group = group;
@@ -367,25 +375,13 @@ void task::AddTask() {
 }
 
 void task::DeleteTask(int pointer) {
-  if (pointer < tasklistlux.datafilevariables[0].stringvectorvalues.size()) {
+  if (pointer < tasklist.size()) {
     tasklist.erase(tasklist.begin() + pointer);
-    tasklistlux.datafilevariables[0].stringvectorvalues.erase(
-        tasklistlux.datafilevariables[0].stringvectorvalues.begin() + pointer);
-    tasklistlux.datafilevariables[1].stringvectorvalues.erase(
-        tasklistlux.datafilevariables[1].stringvectorvalues.begin() + pointer);
-    tasklistlux.datafilevariables[2].intvectorvalues.erase(
-        tasklistlux.datafilevariables[2].intvectorvalues.begin() + pointer);
-    tasklistlux.datafilevariables[3].intvectorvalues.erase(
-        tasklistlux.datafilevariables[3].intvectorvalues.begin() + pointer);
-    tasklistlux.datafilevariables[4].intvectorvalues.erase(
-        tasklistlux.datafilevariables[4].intvectorvalues.begin() + pointer);
-    tasklistlux.datafilevariables[5].doublevectorvalues.erase(
-        tasklistlux.datafilevariables[5].doublevectorvalues.begin() + pointer);
   }
 }
 
 void task::EditTask(int pointer) {
-  if (pointer < tasklistlux.datafilevariables[0].stringvectorvalues.size()) {
+  if (pointer < tasklist.size()) {
     bool edit = true;
     while (edit == true) {
       std::vector<std::string> options = {"Task", "Group", "Priority",
@@ -396,16 +392,13 @@ void task::EditTask(int pointer) {
       getline(std::cin, temp);
       if (select == 1) {
         std::string taskstr = induco::SGetValue("Task");
-        tasklistlux.datafilevariables[0].stringvectorvalues[pointer] = taskstr;
         tasklist[pointer].taskstr = taskstr;
       } else if (select == 2) {
         std::string groupstr = induco::SGetValue("Task Group");
-        tasklistlux.datafilevariables[1].stringvectorvalues[pointer] = groupstr;
         tasklist[pointer].group = groupstr;
 
       } else if (select == 3) {
         int prio = induco::GetValue("Priority [1-6]");
-        tasklistlux.datafilevariables[2].intvectorvalues[pointer] = prio;
         tasklist[pointer].priority = prio;
         getline(std::cin, temp);
 
@@ -471,8 +464,6 @@ void task::EditTask(int pointer) {
         newtime->tm_hour = hour;
         newtime->tm_min = min;
         newtime->tm_sec = sec;
-        tasklistlux.datafilevariables[4].intvectorvalues[pointer] =
-            mktime(newtime);
         tasklist[pointer].duedate = mktime(newtime);
       } else if (select == 5) {
         edit = false;

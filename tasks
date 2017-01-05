@@ -1,7 +1,7 @@
 #DATAFILE
-vector string task Review Review Convert_Task_objects_back_to_data_file_structure! Terminate_Object_causes_SegFault
-vector string group Spanish_201 Physics C++/Task C++/Aequus
-vector int priority 6 5 5 3
-vector int date 1480814383 1480814405 1481411175 1481411203
-vector int duedate 1481529600 1481616000 1483257600 1482220800
-vector double calcsum -11.929884 -8.929884 10.070116 2.070116
+vector string task Create_a_transparent_object_for_button_resizing Create_vector/matrix_math_namespace Create_network_visualization Rewrite_backpropogation_using_vectors_only_and_vector_math
+vector string group C++/Aequus C++/Pessum C++/MNIST C++/MNIST
+vector int priority 3 4 3 4
+vector int date 1482534433 1482862613 1482171004 1482170961
+vector int duedate 1483084800 1483257600 1483257600 1484467200
+vector double calcsum -4.828183 -4.828183 -2.828183 9.171817
